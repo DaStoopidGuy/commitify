@@ -10,5 +10,5 @@ $ ollama pull gemma4:e2b
 
 To run:
 ```sh
-$ python commitify_ollama.py
+$ python commitify.py
 ```
