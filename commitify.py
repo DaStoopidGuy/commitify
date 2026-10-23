@@ -6,6 +6,7 @@ import subprocess
 
 load_dotenv()
 
+MODEL = "gemma-4-26b-a4b-it"
 APIKEY = os.getenv("GEMINI_API_KEY")
 client = genai.Client(api_key=APIKEY)
 
@@ -22,14 +23,17 @@ def get_staged_diff() -> str:
 def generate_commit_message(diff: str):
     try:
         prompt = (
-                "Given to you, is the git diff of the staged files, "
-                "you must read the diff, and generate a concise, imperative commit message (max 50 characters) "
-                "which accurately describes the changes made in the following git diff. "
-                f"DO NOT include any extra text, just the commit message. GOOD BOY.\n\nDiff:\n{diff}"
-            )
+                "TASK: Generate a git commit message for the diff below.\n"
+                "RULES:\n"
+                "1. Output ONLY the raw commit message text.\n"
+                "2. Maximum 50 characters.\n"
+                "3. Imperative mood (e.g., 'Add feature', 'Fix bug').\n"
+                "4. NO thoughts, NO markdown quotes, NO extra chatter.\n\n"
+                f"Diff:\n{diff}"
+                )
 
         response = client.models.generate_content(
-                model="gemma-4-26b-a4b-it",
+                model=MODEL,
                 contents=prompt
                 )
         
